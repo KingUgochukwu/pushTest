@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="subscribe()">Get Notifications</button>
+    <script> 
+    //This service worker allows it to listen to notifications
+    // even when the application is not opened
+    addEventListener('load', async()=>{
+        //registers the service worker on load event
+        const sw = await navigator.serviceWorker.register('./serviceWorker.js')
+        console.log(sw); 
+    }); 
+
+    /*
+        When they click the sub button, we need to request for access to send notification
+        We can do that by making a call to the push manager
+    */
+    async function subscribe(){
+        const sw = await navigator.serviceWorker.ready; 
+        const push = await sw.pushManager.subscribe({
+            // Not sure what this is but it works when it is here
+            userVisibleOnly: true, 
+
+            //This is the link between server and client. This is the public VapID key
+            applicationServerKey: 'BCXlSJK_T5VYzNkm-LaqXtxjdTi4cqGKYMURQfCQMbnwZNacsjukA5SYQj1ipAVDAdx31cNpDaJ_BUIMfjxhgjA'
+        }); 
+        console.log(JSON.stringify(push)); 
+        //this push result is what you would store in a database. 
+        //This is where you look before you can send your notifications 
+    }
+    </script>
+</body>
+</html>
